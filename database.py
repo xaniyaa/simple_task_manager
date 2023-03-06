@@ -13,7 +13,7 @@ Base = declarative_base(bind=engine)
 metadata = MetaData(engine)
 
 class Tasks(Base):
-    __tablename__ = 'tasks' #must be in lowercase
+    __tablename__ = 'tasks' 
     id = Column('id', Integer, primary_key=True)
     name = Column('name', VARCHAR(255), nullable=False)
     description = Column('description', VARCHAR(255), nullable=True)
@@ -23,7 +23,7 @@ class Tasks(Base):
 
 
 class Categories(Base):
-    __tablename__ = 'categories' #must be in lowercase
+    __tablename__ = 'categories' 
     id = Column('id', Integer, primary_key=True)
     name = Column('name', VARCHAR(255), nullable=False)
 

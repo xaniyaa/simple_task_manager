@@ -20,6 +20,7 @@ from sqlalchemy import select
                                 TO-DO
                                 1. rewrite add_tasks function
                                 2. rewrite loading and adding funcs
+                                3. add exception handler class
 '''
 
 
@@ -53,6 +54,7 @@ class MainWindow(QWidget):
         self.engine = create_engine('sqlite:///tasks.db', echo=False)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
+        
         self.init_ui()
         self.load_categories()
         self.load_tasks()
@@ -122,11 +124,6 @@ class MainWindow(QWidget):
     def load_categories(self) -> None:
         result = self.session.query(Categories.name).all()
         self.categories_list.clear()
-        self.categories = []
-        print(result)
-        for row in result:
-            self.categories.append(row[0])
-        print(self.categories)
         for row in result:
             self.categories_list.addItem(QListWidgetItem(row[0]))
 
@@ -145,26 +142,17 @@ class MainWindow(QWidget):
             self.load_categories()
 
     def add_tasks(self) -> None:
-        #checking if item Is selected
         if self.categories_list.currentItem():
             category_name = self.categories_list.currentItem().text()
             name = self.task_name.text()
             description = self.task_description.toPlainText()
-            #getting ids of category from db
             category_id = self.get_category_id_by_name(category_name)
-            # checking if name is written
             if not name == '':
                 addition = Tasks(name=name, description=description, active=True, category_id=category_id)
                 self.session.add(addition)
                 self.session.commit()
                 self.load_tasks()
-        #УРАА ФУНКЦИЯ РАБОТАЕТ :tada: 01.01.23 MERRY XMAS
-        #rewrite with get_category_id function
-    
-    #useless
-    def get_category_id(self) -> int:
-        pass
-
+        
     def get_category_name_by_id(self, id: int | str,) -> tuple | None:
         result = self.session.query(Categories.name).filter(f'{int(id)}'==Categories.id).first()
         return result[0]
